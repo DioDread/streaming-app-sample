@@ -1,0 +1,37 @@
+{
+  "name": "streaming-app-sample",
+  "version": "0.0.1",
+  "description": "Sample app for RS Conf presentation. Demonstrates interoperability of Node stream API, rxjs and redux-observable module.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DioDread/streaming-app-sample.git"
+  },
+  "keywords": [
+    "stream",
+    "rxjs",
+    "electron",
+    "redux-observable",
+    "demo",
+    "sample"
+  ],
+  "author": "Ales Tsvil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DioDread/streaming-app-sample/issues"
+  },
+  "homepage": "https://github.com/DioDread/streaming-app-sample#readme",
+  "dependencies": {
+    "electron": "^1.8.1",
+    "redux": "^3.7.2",
+    "redux-observable": "^0.17.0",
+    "rxjs": "^5.5.6"
+  },
+  "devDependencies": {
+    "devtron": "^1.4.0"
+  }
+}
