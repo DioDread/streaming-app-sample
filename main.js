@@ -2,6 +2,8 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 
+const init = require('./src/app');
+
 let win;
 
 function createWindow() {
@@ -18,6 +20,7 @@ function createWindow() {
   win.on('close', () => {
     win = null;
   });
+  init();
 }
 
 app.on('ready', createWindow);
