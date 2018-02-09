@@ -3,7 +3,7 @@ const { combineEpics } = require('redux-observable');
 
 const { transformReducer, transformEpic } = require('./transform');
 
-const rootReducer = combineReducers({ transformReducer });
+const rootReducer = combineReducers({ transform: transformReducer });
 const rootEpic = combineEpics(transformEpic);
 
 module.exports = {

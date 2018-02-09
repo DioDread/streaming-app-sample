@@ -8,3 +8,28 @@ body {
 .main-view {
   padding: 15px;
 }
+
+.progress-bar-wrapper div {
+  display: inline-block;
+}
+
+.progress-bar-wrapper {
+  margin-left: 15px;
+  margin-right: 15px;
+  height: 45px;
+  background-color: rgb(226, 160, 73)
+}
+
+.progress-bar {
+  width: 5px;
+  height: 45px;
+  background-color: blueviolet;
+  transition: width 150ms ease-in-out;
+}
+
+.progress {
+  font-size: 25px;
+  line-height: 45px;
+  padding-left: 10px;
+  color: whitesmoke;
+}

@@ -4,7 +4,10 @@
   "description": "Sample app for RS Conf presentation. Demonstrates interoperability of Node stream API, rxjs and redux-observable module.",
   "main": "main.js",
   "scripts": {
+    "prestart": "npm i && npm run build",
     "start": "electron .",
+    "build": "webpack",
+    "dev": "webpack --watch & electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,10 +29,18 @@
   },
   "homepage": "https://github.com/DioDread/streaming-app-sample#readme",
   "dependencies": {
+    "any-observable": "^0.2.0",
+    "babel-core": "6.25.0",
+    "babel-loader": "7.1.1",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-1": "6.24.1",
     "electron": "^1.8.2-beta.4",
+    "html-webpack-plugin": "2.29.0",
     "redux": "^3.7.2",
     "redux-observable": "^0.17.0",
-    "rxjs": "^5.5.6"
+    "rxjs": "^5.5.6",
+    "stream-to-observable": "^0.2.0",
+    "webpack": "3.3.0"
   },
   "devDependencies": {
     "devtron": "^1.4.0"
