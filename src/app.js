@@ -5,14 +5,16 @@ import store from './store';
 import { transformAction } from './modules/transform';
 import fileOpenDialog from './utils/file-open-dialog';
 
-import TRANSFORM_STATUS from './constants/transofrm-status';
+import PROCESS_STATUS from './constants/process-status';
 
 let inputFile = '';
 const openFileBtn = document.querySelector('.open-file-btn');
 
+document.querySelector('.cancel').addEventListener('click', () => store.dispatch(transformAction(PROCESS_STATUS.CANCELED)));
+
 openFileBtn.addEventListener('click', () => { 
   inputFile = fileOpenDialog('json');
-  store.dispatch(transformAction(TRANSFORM_STATUS.STARTED, inputFile[0]));
+  store.dispatch(transformAction(PROCESS_STATUS.STARTED, inputFile[0]));
 });
 
 const progressBar = document.querySelector('.progress-bar');

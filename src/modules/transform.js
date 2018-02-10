@@ -53,11 +53,11 @@ const transformEpic = (action$, store) =>
       frs.pipe(jsonTransform);
       frs.pipe(fws);
       return streamToObservable(jsonTransform)
-        .takeUntil(() => transformStatus !== PROCESS_STATUS.CANCELED)
+        .takeWhile(() => transformStatus !== PROCESS_STATUS.CANCELED)
         .map(
           data => {
             recordsCount += data.length;
-            return transformProgress((fws.bytesWritten * 100) / sourceSize, recordsCount) 
+            return transformProgress((fws.bytesWritten * 100) / sourceSize, recordsCount);
           }
         )
         .catch(transformFailed)
@@ -69,7 +69,7 @@ const transformEpic = (action$, store) =>
           jsonTransform.end();
           fws.end();
         });
-    })
+    });
 
 const reducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
