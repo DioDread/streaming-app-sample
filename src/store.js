@@ -1,8 +1,8 @@
-const { createStore, applyMiddleware } = require('redux');
-const { createEpicMiddleware } = require('redux-observable');
+import { createStore, applyMiddleware } from 'redux';
+import { createEpicMiddleware } from 'redux-observable';
 
-const { rootReducer, rootEpic } = require('./modules');
+import { rootReducer, rootEpic } from './modules';
 
 const store = createStore(rootReducer, applyMiddleware(createEpicMiddleware(rootEpic)));
 
-module.exports = store;
+export default store;

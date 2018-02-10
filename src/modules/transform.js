@@ -2,12 +2,19 @@ import fs from 'fs';
 import { Observable } from 'rxjs';
 import streamToObservable from 'stream-to-observable';
 
+import JSONTransform from '../stream/json-transform';
+
+import PROCESS_STATUS from '../constants/process-status';
+
 const TRANSFORM_ACTION = 'streaming-app-sample/transform/TRANSFORM_ACTION';
 const TRANSFORM_PROGRESS = 'streaming-app-sample/transform/TRANSFORM_PROGRESS';
+const TRANSFORM_CANCELED = 'streaming-app-sample/transform/TRANSFORM_CANCELED';
 const TRANSFORM_COMPLETE = 'streaming-app-sample/transform/TRANSFORM_COMPLETE';
 const TRANSFORM_FAILED = 'streaming-app-sample/transform/TRANSFORM_FAILED';
 
 const INITIAL_STATE = {};
+
+let transformStatus = PROCESS_STATUS.UNSPECIFIED;
 
 const transformAction = (status, fileName) => ({
   type: TRANSFORM_ACTION,
@@ -15,31 +22,56 @@ const transformAction = (status, fileName) => ({
   fileName,
 });
 
-const transformProgress = progress => ({
+const transformProgress = (progress, count) => ({
   type: TRANSFORM_PROGRESS,
   progress,
+  count,
 });
+
+const transformFailed = reason => ({
+  type: TRANSFORM_FAILED,
+  reason,
+});
+
+const transformFinished = () => ({
+  type: transformStatus !== PROCESS_STATUS.CANCELED ? TRANSFORM_COMPLETE : TRANSFORM_CANCELED,
+})
 
 const transformEpic = (action$, store) => 
   action$.ofType(TRANSFORM_ACTION)
     .flatMap(action => {
-      const { fileName, status } = action;
-      console.log(action);
-      const frs = fs.createReadStream(fileName);
+      transformStatus = action.status;
+      if (transformStatus === PROCESS_STATUS.CANCELED) {
+        return Observable.empty();
+      }      
+      const { fileName } = action;
+      const frs = fs.createReadStream(fileName, 'utf8');
       const fws = fs.createWriteStream(fileName + '.out');
       const sourceSize = fs.statSync(fileName).size;
+      const jsonTransform = new JSONTransform();
+      let recordsCount = 0;
+      frs.pipe(jsonTransform);
       frs.pipe(fws);
-      return streamToObservable(frs)
-        .filter(
-          () => (fws.bytesWritten * 100) % sourceSize == 0
-        )
+      return streamToObservable(jsonTransform)
+        .takeUntil(() => transformStatus !== PROCESS_STATUS.CANCELED)
         .map(
-          data => transformProgress((fws.bytesWritten * 100) / sourceSize)
-        );
+          data => {
+            recordsCount += data.length;
+            return transformProgress((fws.bytesWritten * 100) / sourceSize, recordsCount) 
+          }
+        )
+        .catch(transformFailed)
+        .concat(Observable.of('')
+          .map(() => transofrmFinished()
+        ))
+        .finally(() => {
+          frs.close();
+          jsonTransform.end();
+          fws.end();
+        });
     })
 
-const transformReducer = (state = INITIAL_STATE, action) => {
-  // console.log(action);
+const reducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case TRANSFORM_ACTION:
       return { 
@@ -51,14 +83,21 @@ const transformReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         progress: Number(action.progress.toFixed(2)),
+        count: action.count,
+      }
+    case TRANSFORM_COMPLETE:
+      return {
+        ...state,
+        progress: 100,
       }
     default:
       return state;
   }
 }
 
-module.exports = {
-  transformReducer,
+export default reducer;
+
+export {
   transformAction,
-  transformEpic,
-}
+  transformEpic,  
+};

@@ -19,6 +19,7 @@ module.exports = {
       '.jsx'
     ],
   },
+  devtool: 'inline-source-map',
   module: {
     rules: [{
       test: /.js$/,

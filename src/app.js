@@ -12,25 +12,19 @@ const openFileBtn = document.querySelector('.open-file-btn');
 
 openFileBtn.addEventListener('click', () => { 
   inputFile = fileOpenDialog('json');
-  console.log(inputFile);
   store.dispatch(transformAction(TRANSFORM_STATUS.STARTED, inputFile[0]));
 });
 
 const progressBar = document.querySelector('.progress-bar');
 const progressCounter = document.querySelector('.progress');
+const recordsCounter = document.querySelector('.records-count');
 
 store.subscribe(() => {
-  const { progress } = store.getState().transform;
-  console.log(progress);
+  const { progress, count } = store.getState().transform;
 
   if (progress) {
     progressBar.style.width = progress + '%';
     progressCounter.innerText = progress + '%';
+    recordsCounter.innerText = `Total records parsed: ${count}`;
   }
 });
-
-// setTimeout(() => progressBar.style.width = '35%', 2000);
-// setTimeout(() => progressBar.style.width = '45%', 1000);
-// setTimeout(() => progressBar.style.width = '75%', 2000);
-// setTimeout(() => progressBar.style.width = '95%', 500);
-// setTimeout(() => progressBar.style.width = '100%', 5000);

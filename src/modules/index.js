@@ -1,12 +1,12 @@
-const { combineReducers } = require('redux');
-const { combineEpics } = require('redux-observable');
+import { combineReducers } from 'redux';
+import  { combineEpics }from 'redux-observable';
 
-const { transformReducer, transformEpic } = require('./transform');
+import transformReducer, { transformEpic } from './transform';
 
 const rootReducer = combineReducers({ transform: transformReducer });
 const rootEpic = combineEpics(transformEpic);
 
-module.exports = {
+export {
   rootEpic,
   rootReducer,
 };
